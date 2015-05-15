@@ -1,0 +1,26 @@
+<head>
+  <title>noripaper</title>
+  <style>
+    .document{
+      min-height: 200px;
+      border: 1px solid gray;
+    }
+    .CodeMirror {
+      line-height: 1.4;
+    }
+  </style>
+</head>
+
+<body>
+  {{> hello}}
+</body>
+
+<template name="hello">
+  <button id="addNew">Add New</button>
+  {{#each documents}}
+  <div class="document">
+    {{> sharejsCM docid=_id  onRender=config id="editor"}}
+    <button class="remove">Remove</button>
+  </div>
+  {{/each}}
+</template>
