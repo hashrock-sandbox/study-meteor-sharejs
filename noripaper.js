@@ -1,19 +1,9 @@
 Documents = new Meteor.Collection("documents")
-Docs = new Meteor.Collection("docs")
-
-
-
-
 
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
   Session.setDefault('editingDocId', "");
 
   Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    },
     documents: function(){
       return Documents.find();
     },
@@ -22,8 +12,6 @@ if (Meteor.isClient) {
     },
     isEditing: function(){
       return Session.get('editingDocId') !== "";
-      
-      //return Session.get('editingDocId') === this._id;
     },
     config: function(){
       return function(cm){
@@ -61,8 +49,6 @@ if (Meteor.isClient) {
     'click .endedit': function (evt) {
       var id = Session.get('editingDocId');
       Meteor.call("getDocumentText", id, function(err, snapshot){
-        console.log(id);
-        console.log(snapshot);
         Documents.update(
           {_id: id},
           {$set: {text: snapshot}}
@@ -73,13 +59,11 @@ if (Meteor.isClient) {
   });
 }
 
-
 if (Meteor.isServer) {
   Meteor.methods({
       getDocumentText: function (docid) {
         var getSnapshot = Meteor.wrapAsync(ShareJS.model.getSnapshot);
-        var doc = getSnapshot(docid);
-        return doc.snapshot;
+        return getSnapshot(docid).snapshot;
       }
   });
   /*
