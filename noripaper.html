@@ -18,15 +18,41 @@
 <template name="hello">
   <p>{{editingDocId}}</p>
   {{#if isEditing}}
-  {{> sharejsCM docid=editingDocId onRender=config id="editor"}}
+    {{> sharejsCM docid=editingDocId onRender=config id="editor"}}
   {{/if}}
-  <button id="addNew">Add New</button>
+  <button id="addNew">Add Note</button>
+  <button id="addKanban">Add Kanban</button>
   {{#each documents}}
+    {{#if isPlain }}
+      {{>plain}}
+    {{/if}}
+    {{#if isKanban }}
+      {{>kanban}}
+    {{/if}}
+  {{/each}}
+</template>
+
+<template name="kanban">
+  <div class="document">
+    <ul>
+      {{#if tasks}}
+        {{#sortable items=tasks}}
+        <li>{{name}}</li>
+        {{/sortable}}
+      {{/if}}
+    </ul>
+    <form class="addTaskForm">
+      <input name="taskName" type="text">
+    </form>
+    
+  </div>  
+</template>
+
+<template name="plain">
   <div class="document">
     {{text}}
     <button class="edit">Edit</button>
     <button class="endedit">EndEdit</button>
     <button class="remove">Remove</button>
-  </div>
-  {{/each}}
+  </div>  
 </template>

@@ -2,8 +2,23 @@ Documents = new Meteor.Collection("documents")
 
 if (Meteor.isClient) {
   Session.setDefault('editingDocId', "");
+  Template.kanban.helpers({
+    /*
+    tasks: function(){
+      console.log(Documents.findOne(this._id).tasks);
+      return Documents.findOne(this._id).tasks;
+    }
+    */
+  });
+
 
   Template.hello.helpers({
+    isPlain: function(){
+      return this.doctype === "plain";
+    },
+    isKanban: function(){
+      return this.doctype === "kanban";
+    },
     documents: function(){
       return Documents.find();
     },
@@ -37,9 +52,16 @@ if (Meteor.isClient) {
   Template.hello.events({
     'click #addNew': function () {
       Documents.insert({
-        text: ""
+        text: "",
+        doctype: "plain"
       });
     },
+    'click #addKanban': function () {
+      Documents.insert({
+        text: "",
+        doctype: "kanban"
+      });
+    },    
     'click .remove': function () {
       Documents.remove(this._id);
     },
@@ -55,6 +77,29 @@ if (Meteor.isClient) {
         )
         Session.set('editingDocId', "");
       });
+    },
+    'submit .addTaskForm': function(event){
+        event.preventDefault();
+        var taskName = event.target.taskName.value;
+        var task = {
+          name: taskName
+        }
+        console.log(this._id);
+        var item = Documents.findOne(this._id);
+        if(!item.tasks){
+          item.tasks = [];
+        }
+        item.tasks.push(task);
+
+        Documents.update(
+          {_id: this._id},
+          {$set: {
+            tasks: item.tasks
+          }}
+        )
+        // Clear form
+        event.target.taskName.value = "";
+        return false;
     }
   });
 }
