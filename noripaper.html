@@ -16,10 +16,16 @@
 </body>
 
 <template name="hello">
+  <p>{{editingDocId}}</p>
+  {{#if isEditing}}
+  {{> sharejsCM docid=editingDocId onRender=config id="editor"}}
+  {{/if}}
   <button id="addNew">Add New</button>
   {{#each documents}}
   <div class="document">
-    {{> sharejsCM docid=_id  onRender=config id="editor"}}
+    {{text}}
+    <button class="edit">Edit</button>
+    <button class="endedit">EndEdit</button>
     <button class="remove">Remove</button>
   </div>
   {{/each}}
